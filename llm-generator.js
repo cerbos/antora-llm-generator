@@ -69,6 +69,16 @@ module.exports.register = function (context, { config }) {
     });
 
     siteCatalog.addFile({
+      out: { path: "llm-full.txt" }, // Output file path
+      contents: Buffer.from(fullContent),
+    });
+
+    siteCatalog.addFile({
+      out: { path: "llm.txt" }, // Output file path
+      contents: Buffer.from(indexContent),
+    });
+
+    siteCatalog.addFile({
       out: { path: "llms.txt" }, // Output file path
       contents: Buffer.from(indexContent),
     });
