@@ -2,8 +2,8 @@
 
 `@cerbos/antora-llm-generator` is an [Antora](https://antora.org) extension that creates two auxiliary text files after each site build:
 
-- **`llm.txt`**
-- **`llm-full.txt`**
+- **`llms.txt`**
+- **`llms-full.txt`**
 
 Both files combine selected site content into a single Markdown document so that large-language models can ingest concise background material, usage guidance, and deep-link references. See the specification at [https://llmstxt.org/](https://llmstxt.org/).
 
@@ -40,8 +40,8 @@ antora:
 You can exclude individual pages without touching the playbook by setting AsciiDoc page attributes:
 
 ```adoc
-:page-llm-ignore: true     # omit from llm.txt
-:page-llm-full-ignore: true # omit from llm-full.txt
+:page-llms-ignore: true     # omit from llms.txt
+:page-llms-full-ignore: true # omit from llms-full.txt
 ```
 
 Apply either or both attributes at the top of the source file.
@@ -56,7 +56,7 @@ Run your Antora build as usual:
 antora antora-playbook.yaml
 ```
 
-On completion, two extra files - `/llm.txt` and `/llm-full.txt` - appear in the build output directory alongside your generated site. Distribute or host them wherever LLMs need access.
+On completion, two extra files - `/llms.txt` and `/llms-full.txt` - appear in the build output directory alongside your generated site. Distribute or host them wherever LLMs need access.
 
 ---
 

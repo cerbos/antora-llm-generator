@@ -40,18 +40,18 @@ module.exports.register = function (context, { config }) {
         continue;
       }
 
-      if (page.asciidoc.attributes["page-llm-ignore"]) {
+      if (page.asciidoc.attributes["page-llms-ignore"]) {
         logger.warn(
-          `Skipping page with 'page-llm-ignore' attribute: ${page.src.path}`
+          `Skipping page with 'page-llms-ignore' attribute: ${page.src.path}`
         );
         continue;
       }
 
       indexContent += `\n- [${page.title}](${siteUrl}/${page.out.path})`;
 
-      if (page.asciidoc.attributes["page-llm-full-ignore"]) {
+      if (page.asciidoc.attributes["page-llms-full-ignore"]) {
         logger.warn(
-          `Skipping page with 'page-llm-full-ignore' attribute: ${page.src.path}`
+          `Skipping page with 'page-llms-full-ignore' attribute: ${page.src.path}`
         );
         continue;
       }
@@ -64,12 +64,12 @@ module.exports.register = function (context, { config }) {
     }
 
     siteCatalog.addFile({
-      out: { path: "llm-full.txt" }, // Output file path
+      out: { path: "llms-full.txt" }, // Output file path
       contents: Buffer.from(fullContent),
     });
 
     siteCatalog.addFile({
-      out: { path: "llm.txt" }, // Output file path
+      out: { path: "llms.txt" }, // Output file path
       contents: Buffer.from(indexContent),
     });
 
