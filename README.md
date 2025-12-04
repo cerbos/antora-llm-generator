@@ -42,9 +42,24 @@ You can exclude individual pages without touching the playbook by setting AsciiD
 ```adoc
 :page-llms-ignore: true     # omit from llms.txt
 :page-llms-full-ignore: true # omit from llms-full.txt
+:page-llms-description: Brief description of this page # add description to page link in llms.txt
 ```
 
-Apply either or both attributes at the top of the source file.
+Apply any or all attributes at the top of the source file.
+
+### Page descriptions
+
+The `:page-llms-description:` attribute allows you to add optional descriptions to page links in `llms.txt`, following the [llmstxt.org specification](https://llmstxt.org/). 
+
+**Without description:**
+```markdown
+- [Getting Started](https://example.com/getting-started)
+```
+
+**With description:**
+```markdown  
+- [Getting Started](https://example.com/getting-started): Quick start guide for new users
+```
 
 ---
 

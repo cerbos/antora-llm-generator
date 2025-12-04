@@ -47,7 +47,12 @@ module.exports.register = function (context, { config }) {
         continue;
       }
 
-      indexContent += `\n- [${page.title}](${siteUrl}/${page.out.path})`;
+      const description = page.asciidoc.attributes["page-llms-description"];
+      if (description) {
+        indexContent += `\n- [${page.title}](${siteUrl}/${page.out.path}): ${description}`;
+      } else {
+        indexContent += `\n- [${page.title}](${siteUrl}/${page.out.path})`;
+      }
 
       if (page.asciidoc.attributes["page-llms-full-ignore"]) {
         logger.warn(
