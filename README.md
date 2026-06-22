@@ -1,11 +1,10 @@
 # `@cerbos/antora-llm-generator`
 
-`@cerbos/antora-llm-generator` is an [Antora](https://antora.org) extension that creates two auxiliary text files after each site build:
+`@cerbos/antora-llm-generator` is an [Antora](https://antora.org) extension that makes your documentation site agent-friendly. After each build it creates:
 
-- **`llms.txt`**
-- **`llms-full.txt`**
-
-Both files combine selected site content into a single Markdown document so that large-language models can ingest concise background material, usage guidance, and deep-link references. See the specification at [https://llmstxt.org/](https://llmstxt.org/).
+- **`llms.txt`** — an index of every page, following the [llmstxt.org](https://llmstxt.org/) spec.
+- **`llms-full.txt`** — the full text of every page concatenated into one Markdown document.
+- **A `.md` file for every page** — each rendered page is also written as Markdown alongside its HTML (e.g. `/docs/foo.html` → `/docs/foo.md`), so agents and crawlers can fetch a clean, LLM-friendly version of any individual page.
 
 ---
 
@@ -29,9 +28,11 @@ antora:
     - require: "@cerbos/antora-llm-generator"
       skippaths:
         - "someGlob/**/path"
+      pagemarkdown: true
 ```
 
-- `skippaths` accepts one or more glob patterns. Any file that matches a pattern is omitted from **both** `llm.txt` and `llm-full.txt`.
+- `skippaths` accepts one or more glob patterns. Any file that matches a pattern is omitted from **both** `llm.txt` and `llm-full.txt`, and no per-page `.md` file is generated for it.
+- `pagemarkdown` (default `true`) toggles generation of the per-page `.md` files. Set it to `false` to emit only the aggregate `llms.txt` / `llms-full.txt` files.
 
 ---
 
@@ -71,7 +72,7 @@ Run your Antora build as usual:
 antora antora-playbook.yaml
 ```
 
-On completion, two extra files - `/llms.txt` and `/llms-full.txt` - appear in the build output directory alongside your generated site. Distribute or host them wherever LLMs need access.
+On completion, `/llms.txt` and `/llms-full.txt` appear in the build output directory, and a `.md` companion is written next to every page's HTML output. Distribute or host them wherever LLMs need access.
 
 ---
 

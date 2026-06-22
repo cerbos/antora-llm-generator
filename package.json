@@ -1,7 +1,7 @@
 {
   "name": "@cerbos/antora-llm-generator",
   "private": false,
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "An Antora extension to generate llm.txt files for LLM consumption.",
   "main": "llm-generator.js",
   "keywords": [

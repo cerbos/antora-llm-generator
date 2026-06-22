@@ -16,6 +16,8 @@ module.exports.register = function (context, { config }) {
   const siteUrl = playbook.site?.url;
 
   const skipPaths = config.skippaths || [];
+  // Per-page Markdown generation is on by default; set `pagemarkdown: false` to disable.
+  const pageMarkdownEnabled = config.pagemarkdown !== false;
 
   logger.warn(`Skip paths: ${JSON.stringify(skipPaths)}`);
 
@@ -66,6 +68,17 @@ module.exports.register = function (context, { config }) {
       fullContent += `\n\n${page.title}\n`;
       fullContent += "====================\n";
       fullContent += plainText;
+
+      // Emit a per-page Markdown file alongside the HTML output so that agents
+      // can fetch an LLM-friendly version of any page (e.g. foo.html -> foo.md).
+      const mdPath = page.out.path.replace(/\.html$/, ".md");
+      if (pageMarkdownEnabled && mdPath !== page.out.path) {
+        const pageMarkdown = `# ${page.title}\n\n${plainText}\n`;
+        siteCatalog.addFile({
+          out: { path: mdPath },
+          contents: Buffer.from(pageMarkdown),
+        });
+      }
     }
 
     siteCatalog.addFile({
