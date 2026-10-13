@@ -33,6 +33,37 @@ antora:
 
 - `skippaths` accepts one or more glob patterns. Any file that matches a pattern is omitted from **both** `llm.txt` and `llm-full.txt`, and no per-page `.md` file is generated for it.
 - `pagemarkdown` (default `true`) toggles generation of the per-page `.md` files. Set it to `false` to emit only the aggregate `llms.txt` / `llms-full.txt` files.
+- `summary` (optional) adds a one-line description of the site to `llms.txt`, as a blockquote under the title.
+- `sections` (optional) appends sections of links that are not documentation pages, such as an SDK repository or an agent skills package, to `llms.txt` after the page index. Each section needs a `title` and a list of `links`; each link needs a `title` and a `url`, and takes an optional `description`. Entries missing a required field are skipped with a warning.
+
+```yaml
+antora:
+  extensions:
+    - require: "@cerbos/antora-llm-generator"
+      summary: "Cerbos is an authorization layer that evaluates access-control policies at runtime."
+      sections:
+        - title: Agent skills
+          links:
+            - title: Cerbos agent skills
+              url: https://github.com/cerbos/skills
+              description: Skills that teach AI coding agents to design authorization and write Cerbos policies.
+```
+
+This produces:
+
+```markdown
+# Site title
+
+> Cerbos is an authorization layer that evaluates access-control policies at runtime.
+
+- [Page](https://example.com/page)
+
+## Agent skills
+
+- [Cerbos agent skills](https://github.com/cerbos/skills): Skills that teach AI coding agents to design authorization and write Cerbos policies.
+```
+
+`summary` and `sections` change `llms.txt` only; `llms-full.txt` and the per-page `.md` files are unaffected.
 
 ---
 
