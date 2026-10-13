@@ -19,7 +19,36 @@ module.exports.register = function (context, { config }) {
   // Per-page Markdown generation is on by default; set `pagemarkdown: false` to disable.
   const pageMarkdownEnabled = config.pagemarkdown !== false;
 
+  // Optional llms.txt content that does not come from a page: a one-line site
+  // summary rendered as a blockquote under the title, and extra sections of
+  // links appended after the page index.
+  const summary = typeof config.summary === "string" ? config.summary.trim() : "";
+  const sections = Array.isArray(config.sections) ? config.sections : [];
+
   logger.warn(`Skip paths: ${JSON.stringify(skipPaths)}`);
+
+  const formatLink = (title, url, description) =>
+    description ? `- [${title}](${url}): ${description}` : `- [${title}](${url})`;
+
+  const formatSections = () => {
+    let out = "";
+    sections.forEach((section, i) => {
+      if (!section || typeof section.title !== "string" || !Array.isArray(section.links)) {
+        logger.warn(`Ignoring sections[${i}]: it needs a title and a links list`);
+        return;
+      }
+      const links = section.links.filter((link, j) => {
+        if (link && typeof link.title === "string" && typeof link.url === "string") return true;
+        logger.warn(`Ignoring sections[${i}].links[${j}]: it needs a title and a url`);
+        return false;
+      });
+      out += `\n\n## ${section.title}\n`;
+      for (const link of links) {
+        out += `\n${formatLink(link.title, link.url, link.description)}`;
+      }
+    });
+    return out;
+  };
 
   const shouldSkipPath = (path) => {
     return skipPaths.some((pattern) => minimatch(path, pattern));
@@ -29,6 +58,9 @@ module.exports.register = function (context, { config }) {
     logger.info("Assembling content for LLM text files.");
 
     let indexContent = `# ${siteTitle}\n\n`;
+    if (summary) {
+      indexContent += `> ${summary}\n\n`;
+    }
     let fullContent = "";
 
     const pages = contentCatalog.findBy({ family: "page" });
@@ -50,11 +82,7 @@ module.exports.register = function (context, { config }) {
       }
 
       const description = page.asciidoc.attributes["page-llms-description"];
-      if (description) {
-        indexContent += `\n- [${page.title}](${siteUrl}/${page.out.path}): ${description}`;
-      } else {
-        indexContent += `\n- [${page.title}](${siteUrl}/${page.out.path})`;
-      }
+      indexContent += `\n${formatLink(page.title, `${siteUrl}/${page.out.path}`, description)}`;
 
       if (page.asciidoc.attributes["page-llms-full-ignore"]) {
         logger.warn(
@@ -80,6 +108,8 @@ module.exports.register = function (context, { config }) {
         });
       }
     }
+
+    indexContent += formatSections();
 
     siteCatalog.addFile({
       out: { path: "llms-full.txt" }, // Output file path
