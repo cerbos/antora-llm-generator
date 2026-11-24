@@ -49,6 +49,9 @@ antora:
               description: Skills that teach AI coding agents to design authorization and write Cerbos policies.
 ```
 
+> [!IMPORTANT]
+> An Antora playbook file may have multiple `extensions:` objects. Make sure to add the `@cerbos/antora-llm-generator` extension entry to the `antora:->extensions:` object, and not, e.g., to the `asciidoc:->extensions:` one.
+
 This produces:
 
 ```markdown
